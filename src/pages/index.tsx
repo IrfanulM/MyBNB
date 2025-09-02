@@ -153,7 +153,7 @@ export default function HomePage() {
                   </Link>
                   <p className="listing-summary">{listing.summary}</p>
                   <p className="listing-price">Daily Rate: ${listing.price.$numberDecimal}</p>
-                  <p className="listing-rating">Customer Rating: {listing.review_scores.review_scores_rating}</p>
+                  <p className="listing-rating">Customer Rating: {listing.review_scores.review_scores_rating ?? 'N/A'}</p>
                   <p className="listing-misc">{listing.bedrooms} bedroom {listing.property_type.toLowerCase()} in {listing.address.market}.</p>
                 </div>
               ))}
