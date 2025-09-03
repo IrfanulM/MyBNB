@@ -218,6 +218,8 @@ html, body, #root {
   margin-bottom: 0.5rem;
   line-height: 1.3;
   transition: transform 0.5s ease-in-out, color 0.2s ease;
+  white-space: normal;
+  word-wrap: break-word;
 }
 
 .listing-name:hover {
@@ -307,6 +309,12 @@ html, body, #root {
   font-weight: 900;
   color: #ffffff;
   display: block;
+}
+
+.rating-scale {
+  font-size: 0.7em;
+  color: #555;
+  margin-left: 2px;
 }
 
 .listing-misc {

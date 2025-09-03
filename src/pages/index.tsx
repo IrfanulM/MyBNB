@@ -69,6 +69,14 @@ export default function HomePage() {
     }
   };
 
+  function toTitleCase(str: string): string {
+    return str
+        .toLowerCase()
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+}
+
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const cardParent = e.currentTarget;
     const card = cardParent.querySelector('.listing-card') as HTMLDivElement;
@@ -192,19 +200,26 @@ export default function HomePage() {
                   <div className="listing-card">
                     <div className="pop">
                       <Link href={`/bookings/${listing._id}`} passHref>
-                          <p className="listing-name">{listing.name}</p>
+                          <p className="listing-name">{listing.name && listing.name != "" ? toTitleCase(listing.name) : 'No Title'}</p>
                       </Link>
                     </div>
-                    <p className="listing-summary">{listing.summary}</p>
+                    <p className="listing-summary">{listing.summary && listing.summary != "" ? listing.summary : 'No description provided'}</p>
                     
                     <div className="card-details-container">
                         <div className="price-box">
                             <span className="price-label">Daily Rate</span>
-                            <span className="price-value">${listing.price.$numberDecimal}</span>
+                            <span className="price-value">${listing.price.$numberDecimal ?? 'N/A'}</span>
                         </div>
                         <div className="rating-box">
                             <span className="rating-label">Customer Rating</span>
-                            <span className="rating-value">{listing.review_scores.review_scores_rating ?? 'N/A'}</span>
+                            <span className="rating-value">
+                              {listing.review_scores.review_scores_rating ? (
+                                <>
+                                  {listing.review_scores.review_scores_rating} 
+                                  <span className="rating-scale">/100</span>
+                                </>
+                              ) : 'N/A'}
+                            </span>
                         </div>
                     </div>
 
