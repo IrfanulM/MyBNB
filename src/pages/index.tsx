@@ -77,21 +77,21 @@ export default function HomePage() {
     const { left, top, width, height } = cardParent.getBoundingClientRect();
     const x = e.clientX - left;
     const y = e.clientY - top;
-    const angle = 15;
+    const angle = 10;
 
-    // Top-Right Quadrant
+    // Top-Right
     if (x > width / 2 && y < height / 2) {
       card.style.transform = `rotateX(${angle}deg) rotateY(${angle}deg)`;
     } 
-    // Top-Left Quadrant
+    // Top-Left
     else if (x < width / 2 && y < height / 2) {
       card.style.transform = `rotateX(${angle}deg) rotateY(-${angle}deg)`;
     } 
-    // Bottom-Right Quadrant
+    // Bottom-Right
     else if (x > width / 2 && y > height / 2) {
       card.style.transform = `rotateX(-${angle}deg) rotateY(${angle}deg)`;
     } 
-    // Bottom-Left Quadrant
+    // Bottom-Left
     else {
       card.style.transform = `rotateX(-${angle}deg) rotateY(-${angle}deg)`;
     }
@@ -190,23 +190,31 @@ export default function HomePage() {
                   onMouseLeave={handleMouseLeave}
                 >
                   <div className="listing-card">
+                    <div className="pop">
                       <Link href={`/bookings/${listing._id}`} passHref>
                           <p className="listing-name">{listing.name}</p>
                       </Link>
-                      <p className="listing-summary">{listing.summary}</p>
-                      
-                      <div className="card-details-container">
-                          <div className="price-box">
-                              <span className="price-label">Daily Rate</span>
-                              <span className="price-value">${listing.price.$numberDecimal}</span>
-                          </div>
-                          <div className="rating-box">
-                              <span className="rating-label">Customer Rating</span>
-                              <span className="rating-value">{listing.review_scores.review_scores_rating ?? 'N/A'}</span>
-                          </div>
-                      </div>
+                    </div>
+                    <p className="listing-summary">{listing.summary}</p>
+                    
+                    <div className="card-details-container">
+                        <div className="price-box">
+                            <span className="price-label">Daily Rate</span>
+                            <span className="price-value">${listing.price.$numberDecimal}</span>
+                        </div>
+                        <div className="rating-box">
+                            <span className="rating-label">Customer Rating</span>
+                            <span className="rating-value">{listing.review_scores.review_scores_rating ?? 'N/A'}</span>
+                        </div>
+                    </div>
 
-                      <p className="listing-misc">{listing.bedrooms} bedroom {listing.property_type.toLowerCase()} in {listing.address.market}.</p>
+                    <div className="pop">
+                      <Link href={`/bookings/${listing._id}`} passHref>
+                          <div className="book-button">Book</div>
+                      </Link>
+                    </div>
+
+                    <p className="listing-misc">{listing.bedrooms} bedroom {listing.property_type.toLowerCase()} in {listing.address.market}.</p>
                   </div>
                 </div>
               ))}
