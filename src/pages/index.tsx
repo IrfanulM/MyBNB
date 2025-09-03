@@ -198,6 +198,18 @@ export default function HomePage() {
                   onMouseLeave={handleMouseLeave}
                 >
                   <div className="listing-card">
+                    {listing.images?.picture_url && (
+                      <div className="listing-image-container">
+                        <img
+                          src={listing.images.picture_url}
+                          alt={listing.name || 'Listing image'}
+                          className="listing-image"
+                          onError={(e) => {
+                            e.currentTarget.src = '/no-image.avif';
+                          }}
+                        />
+                      </div>
+                    )}
                     <div className="pop">
                       <Link href={`/bookings/${listing._id}`} passHref>
                           <p className="listing-name">{listing.name && listing.name != "" ? toTitleCase(listing.name) : 'No Title'}</p>

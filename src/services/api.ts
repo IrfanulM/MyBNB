@@ -4,6 +4,7 @@ export interface Listing {
   summary: string;
   price: { $numberDecimal: string };
   review_scores: { review_scores_rating?: number; };
+  images: { picture_url?: string; };
   property_type: string;
   bedrooms: string;
   address: { market: string; };
