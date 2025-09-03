@@ -5,6 +5,7 @@ html, body, #root {
 }
 
 * {
+  box-sizing: border-box;
   font-family: 'Archivo', sans-serif;
 }
 
@@ -458,4 +459,83 @@ html, body, #root {
   text-align: center;
   font-size: 1.2rem;
   margin-top: 4rem;
+}
+
+/* Navbar Styles */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  z-index: 1000;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+.navbar.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.navbar-logo {
+  cursor: pointer;
+}
+
+.profile-button {
+  background-color: rgba(29, 29, 29, 0.8);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.profile-button:hover {
+  background-color: #000;
+}
+
+
+/* Footer Styles */
+.footer {
+  background-color: #0a0a0a;
+  color: #8f8f8f;
+  padding: 2rem 0;
+  text-align: center;
+  border-top: 1px solid #222;
+  flex-shrink: 0;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.footer-links {
+  margin-top: 0.5rem;
+}
+
+.footer-links a {
+  color: #8f8f8f;
+  text-decoration: none;
+  margin: 0 0.5rem;
+  transition: color 0.2s;
+}
+
+.footer-links a:hover {
+  color: #fff;
 }
