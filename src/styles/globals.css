@@ -181,32 +181,34 @@ html, body, #root {
   column-gap: 1.5rem;
 }
 
-.listings-grid > .listing-card {
+.listing-parent {
   display: block;
   width: 100%;
   margin-bottom: 1.5rem;
   break-inside: avoid;
   box-sizing: border-box;
+  perspective: 1000px;
 }
 
 .listing-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   background-color: rgba(45, 45, 45, 0.7);
   border: 1px solid rgba(255, 255, 255, 0.1);
   text-align: left;
-  overflow: hidden;
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   padding: 1.5rem;
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out;
-  display: block;
   width: 100%;
   box-sizing: border-box;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.5s ease-in-out, box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out;
 }
 
-.listing-card:hover {
-  transform: translateY(-0.5rem);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
-  border-color: rgba(255, 255, 255, 0.3);
+.listing-card a {
+  text-decoration: none;
 }
 
 .listing-name {
@@ -215,43 +217,81 @@ html, body, #root {
   color: #ff6b6b;
   margin-bottom: 0.5rem;
   line-height: 1.3;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
-}
-
-.listing-card a {
-  text-decoration: none;
+  transform: translate3d(0px, 0px, 50px);
+  transition: transform 0.5s ease-in-out, color 0.2s ease;
 }
 
 .listing-name:hover {
-  color: rgb(0, 0, 0);
-  transition: ease 0.2s;
+  color: #e25858;
+  transform: translate3d(0px, 0px, 65px);
 }
 
 .listing-summary {
   font-size: 0.9rem;
-  letter-spacing: 0.5px;
   color: #ffffff;
   margin-bottom: 1.5rem;
+  flex-grow: 1;
+  transform: translate3d(0px, 0px, 30px);
+  transition: transform 0.5s ease-in-out;
 }
 
-.listing-price {
-  font-size: 1.1rem;
-  font-weight: 600;
+.listing-summary:hover {
+  transform: translate3d(0px, 0px, 45px);
+}
+
+.card-details-container {
+  display: flex;
+  gap: 1rem;
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  transform: translate3d(0px, 0px, 40px);
+}
+
+.price-box,
+.rating-box {
+  background: #141414;
+  border: 1px solid #ff6b6b;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  text-align: center;
+  flex-grow: 1;
+  transition: transform 0.5s ease-in-out;
+}
+
+.price-box:hover,
+.rating-box:hover {
+  transform: scale(1.05);
+}
+
+.price-label,
+.rating-label {
   color: #ff6b6b;
-  margin-bottom: 0.5rem;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  display: block;
 }
 
-.listing-rating {
-  font-size: 1.1rem;
+.price-value,
+.rating-value {
+  font-size: 1.5rem;
+  font-weight: 900;
   color: #ffffff;
-  font-weight: 500;
-  margin-top: 0.5rem;
+  display: block;
 }
 
 .listing-misc {
   font-size: 0.7rem;
   color: #8f8f8f;
   text-align: right;
+  margin-top: 1rem;
+  transform: translate3d(0px, 0px, 20px);
+  transition: transform 0.5s ease-in-out;
+}
+
+.listing-misc:hover {
+  transform: translate3d(0px, 0px, 35px);
 }
 
 /* Booking page */

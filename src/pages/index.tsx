@@ -69,6 +69,42 @@ export default function HomePage() {
     }
   };
 
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const cardParent = e.currentTarget;
+    const card = cardParent.querySelector('.listing-card') as HTMLDivElement;
+    if (!card) return;
+
+    const { left, top, width, height } = cardParent.getBoundingClientRect();
+    const x = e.clientX - left;
+    const y = e.clientY - top;
+    const angle = 15;
+
+    // Top-Right Quadrant
+    if (x > width / 2 && y < height / 2) {
+      card.style.transform = `rotateX(${angle}deg) rotateY(${angle}deg)`;
+    } 
+    // Top-Left Quadrant
+    else if (x < width / 2 && y < height / 2) {
+      card.style.transform = `rotateX(${angle}deg) rotateY(-${angle}deg)`;
+    } 
+    // Bottom-Right Quadrant
+    else if (x > width / 2 && y > height / 2) {
+      card.style.transform = `rotateX(-${angle}deg) rotateY(${angle}deg)`;
+    } 
+    // Bottom-Left Quadrant
+    else {
+      card.style.transform = `rotateX(-${angle}deg) rotateY(-${angle}deg)`;
+    }
+  };
+
+  const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+    const cardParent = e.currentTarget;
+    const card = cardParent.querySelector('.listing-card') as HTMLDivElement;
+    if (!card) return;
+    
+    card.style.transform = 'rotateX(0deg) rotateY(0deg)';
+  };
+
   return (
     <div className="page-container">
       <header className="top-section">
@@ -147,14 +183,31 @@ export default function HomePage() {
           {!loading && listings.length > 0 ? (
             <div className="listings-grid">
               {listings.map((listing) => (
-                <div key={listing._id} className="listing-card">
-                  <Link href={`/bookings/${listing._id}`} passHref>
-                    <p className="listing-name">{listing.name}</p>
-                  </Link>
-                  <p className="listing-summary">{listing.summary}</p>
-                  <p className="listing-price">Daily Rate: ${listing.price.$numberDecimal}</p>
-                  <p className="listing-rating">Customer Rating: {listing.review_scores.review_scores_rating ?? 'N/A'}</p>
-                  <p className="listing-misc">{listing.bedrooms} bedroom {listing.property_type.toLowerCase()} in {listing.address.market}.</p>
+                <div 
+                  key={listing._id} 
+                  className="listing-parent"
+                  onMouseMove={handleMouseMove}
+                  onMouseLeave={handleMouseLeave}
+                >
+                  <div className="listing-card">
+                      <Link href={`/bookings/${listing._id}`} passHref>
+                          <p className="listing-name">{listing.name}</p>
+                      </Link>
+                      <p className="listing-summary">{listing.summary}</p>
+                      
+                      <div className="card-details-container">
+                          <div className="price-box">
+                              <span className="price-label">Daily Rate</span>
+                              <span className="price-value">${listing.price.$numberDecimal}</span>
+                          </div>
+                          <div className="rating-box">
+                              <span className="rating-label">Customer Rating</span>
+                              <span className="rating-value">{listing.review_scores.review_scores_rating ?? 'N/A'}</span>
+                          </div>
+                      </div>
+
+                      <p className="listing-misc">{listing.bedrooms} bedroom {listing.property_type.toLowerCase()} in {listing.address.market}.</p>
+                  </div>
                 </div>
               ))}
             </div>
