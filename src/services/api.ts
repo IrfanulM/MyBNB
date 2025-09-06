@@ -62,6 +62,56 @@ export const listingsApi = {
       },
       body: JSON.stringify(bookingData),
     });
-    return await response.json();
+    const data = await response.json();
+    if (!response.ok) {
+        throw new Error(data.message || 'Something went wrong!');
+    }
+    return data;
+  },
+  signup: async (credentials: any): Promise<any> => {
+      const response = await fetch('/api/auth/signup', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(credentials),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+          throw new Error(data.message || 'Something went wrong!');
+      }
+      return data;
+  },
+  signin: async (credentials: any): Promise<any> => {
+    const response = await fetch('/api/auth/signin', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(credentials),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+        throw new Error(data.message || 'Something went wrong!');
+    }
+    return data;
+  },
+  getUserBookings: async (): Promise<Listing[]> => {
+      const response = await fetch('/api/user/bookings');
+      const data = await response.json();
+      if (!response.ok) {
+          throw new Error(data.message || 'Something went wrong!');
+      }
+      return data;
+  },
+  signout: async (): Promise<any> => {
+    const response = await fetch('/api/auth/signout', {
+      method: 'POST',
+    });
+    const data = await response.json();
+    if (!response.ok) {
+        throw new Error(data.message || 'Something went wrong!');
+    }
+    return data;
   },
 }

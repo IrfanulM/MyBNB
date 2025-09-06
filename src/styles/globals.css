@@ -20,7 +20,6 @@ html, body, #root {
   caret-color: transparent;
 }
 
-/* Top section */
 .top-section {
   background: linear-gradient(to right, #e25858, #ff6b6b);
   padding: 40px 20px;
@@ -102,7 +101,6 @@ html, body, #root {
   caret-color: auto;
 }
 
-/* Search button */
 .error-search {
   margin-top: 2rem;
   margin-bottom: 1.2rem;
@@ -168,7 +166,6 @@ html, body, #root {
   100% { transform: rotate(360deg); }
 }
 
-/* Bottom section */
 .bottom-section {
   background-color: #1d1d1d;
   flex-grow: 1;
@@ -369,7 +366,6 @@ html, body, #root {
   align-self: center;
 }
 
-/* Confirmation page */
 .confirmation-wrapper {
   display: flex;
   align-items: center;
@@ -435,7 +431,6 @@ html, body, #root {
   margin-top: 4rem;
 }
 
-/* Navbar Styles */
 .navbar {
   position: fixed;
   top: 0;
@@ -467,6 +462,12 @@ html, body, #root {
   cursor: pointer;
 }
 
+.navbar-links {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
 .profile-button {
   background-color: rgba(29, 29, 29, 0.8);
   color: white;
@@ -482,8 +483,22 @@ html, body, #root {
   background-color: #000;
 }
 
+.profile-button-secondary {
+  background-color: transparent;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 20px;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+}
 
-/* Footer Styles */
+.profile-button-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: white;
+}
+
 .footer {
   background-color: #0a0a0a;
   color: #8f8f8f;
@@ -514,7 +529,6 @@ html, body, #root {
   color: #fff;
 }
 
-/* Modal Styles */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -725,3 +739,167 @@ html, body, #root {
   background-color: #e25858;
 }
 
+.auth-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  min-height: 100vh;
+  background-color: #0f0f0f;
+}
+
+.auth-card {
+  background-color: #1a1a1a;
+  padding: 2.5rem 3rem;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 420px;
+  border: 1px solid rgba(255, 107, 107, 0.2);
+  box-shadow: 0 0 30px rgba(255, 107, 107, 0.3);
+}
+
+.auth-card h1 {
+  color: #ffffff;
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2.2rem;
+  font-weight: 700;
+}
+
+.auth-page .input-group {
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.auth-page .input-group label {
+  display: block;
+  margin-bottom: 0.75rem;
+  color: #c0c0c0;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.auth-page .input-group input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #444;
+  border-radius: 8px;
+  background-color: #2c2c2c;
+  color: white;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.auth-page .input-group input::placeholder {
+  color: #777;
+}
+
+.auth-page .input-group input:focus {
+  border-color: #ff6b6b;
+  box-shadow: 0 0 10px rgba(255, 107, 107, 0.4);
+}
+
+.auth-button {
+  background-color: #ff6b6b;
+  color: #141414;
+  font-weight: 700;
+  border: none;
+  border-radius: 8px;
+  padding: 1rem;
+  width: 100%;
+  font-size: 1.1rem;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.auth-button:hover {
+  background-color: #e25858;
+  transform: translateY(-2px);
+}
+
+.auth-button:disabled {
+  background-color: #555;
+  color: #999;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.auth-page .error-message {
+  color: #ff8a80;
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+.switch-auth-link {
+  margin-top: 2rem;
+  text-align: center;
+  color: #999;
+}
+
+.switch-auth-link a {
+  color: #ff6b6b;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.switch-auth-link a:hover {
+  text-decoration: underline;
+}
+
+.profile-page {
+    padding: 6rem 2rem 2rem;
+    color: #eaeaea;
+    background-color: #0f0f0f;
+    min-height: 100vh;
+}
+
+.profile-page h1 {
+    color: #ff6b6b;
+    margin-bottom: 2rem;
+    text-align: center;
+    font-size: 2.5rem;
+}
+
+.bookings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.5rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.booking-card {
+    background-color: #1d1d1d;
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid #333;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.booking-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.booking-card h2 {
+    color: #ff6b6b;
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+    font-size: 1.6rem;
+}
+
+.booking-card p {
+    color: #b0b0b0;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.loading-message, .empty-message {
+    text-align: center;
+    color: #999;
+    margin-top: 3rem;
+    font-size: 1.2rem;
+}

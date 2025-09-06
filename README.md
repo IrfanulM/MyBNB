@@ -53,6 +53,7 @@ Follow these instructions to get a copy of the project up and running on your lo
 6.  **Open your browser:** Navigate to [http://localhost:3000](http://localhost:3000) to see the application running.
 
 ## Environment Variables
+
 To run this project, you need to create a `.env.local` file in the root of the project with the following variables:
 
     # Your personal MongoDB connection string.
@@ -62,6 +63,17 @@ To run this project, you need to create a `.env.local` file in the root of the p
     # The default database name.
     # This should be "sample_airbnb" if using the sample dataset.
     DB_NAME="sample_airbnb"
+
+    # A secret for signing JSON Web Tokens for user authentication.
+    JWT_SECRET=""
+
+**Generating a JWT_SECRET:**
+
+You must generate a secure, random string for the `JWT_SECRET`. You can do this by running the following command in your terminal:
+
+    node -e "console.log(require('crypto').randomBytes(32).toString('base64'));"
+
+Copy the output and paste it as the value for `JWT_SECRET` in your `.env.local` file.
 
 **Important:** Ensure your MongoDB Atlas cluster's Network Access list is configured to allow connections from your IP address or from anywhere (`0.0.0.0/0`) for development.
 
