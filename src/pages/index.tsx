@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { listingsApi, Listing } from '../services/api';
-import Link from 'next/link';
+import BookingModal from '../pages/booking';
 
 export default function HomePage() {
   const [error, setError] = useState<String>("");
@@ -13,6 +13,8 @@ export default function HomePage() {
 
   const [propertyTypeOptions, setPropertyTypeOptions] = useState<string[]>([]);
   const [bedroomOptions, setBedroomOptions] = useState<string[]>([]);
+  
+  const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
 
   useEffect(() => {
     const fetchAllInitialData = async () => {
@@ -43,8 +45,26 @@ export default function HomePage() {
 
     fetchAllInitialData();
   }, []);
+  
+  useEffect(() => {
+    if (selectedListing) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [selectedListing]);
 
-  // function to handle the search button click
+  const handleBookClick = (listing: Listing) => {
+    setSelectedListing(listing);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedListing(null);
+  };
+
   const handleSearch = async () => {
     if (!location) {
       setError("You must enter a location.");
@@ -87,19 +107,15 @@ export default function HomePage() {
     const y = e.clientY - top;
     const angle = 10;
 
-    // Top-Right
     if (x > width / 2 && y < height / 2) {
       card.style.transform = `rotateX(${angle}deg) rotateY(${angle}deg)`;
     } 
-    // Top-Left
     else if (x < width / 2 && y < height / 2) {
       card.style.transform = `rotateX(${angle}deg) rotateY(-${angle}deg)`;
     } 
-    // Bottom-Right
     else if (x > width / 2 && y > height / 2) {
       card.style.transform = `rotateX(-${angle}deg) rotateY(${angle}deg)`;
     } 
-    // Bottom-Left
     else {
       card.style.transform = `rotateX(-${angle}deg) rotateY(-${angle}deg)`;
     }
@@ -114,142 +130,142 @@ export default function HomePage() {
   };
 
   return (
-    <div className="page-container">
-      <header className="top-section">
-        <div className="input-group-container">
-          <div className="input-group">
+    <>
+      <div className="page-container">
+        <header className="top-section">
+          <div className="input-group-container">
+            <div className="input-group">
 
-            <label htmlFor="location" className="input-label">
-              Location
-            </label>
-            <input
-              type="text"
-              id="location"
-              placeholder="Enter desired location"
-              className="input-field"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              required
-              disabled={loading}
-            />
-          </div>
-
-          <div className="input-group">
-            <label htmlFor="property-type" className="input-label">
-              Property Type
-            </label>
-            <select
-              id="property-type"
-              className="input-field"
-              value={property_type}
-              onChange={(e) => setPropertyType(e.target.value)}
-              disabled={loading}
-            >
-              <option value="">No Selection</option>
-              {propertyTypeOptions.map((type) => (
-                <option key={type} value={type}>
-                  {type}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="input-group">
-            <label htmlFor="bedrooms" className="input-label">
-              Number of Bedrooms
-            </label>
-            <select
-              id="bedrooms"
-              className="input-field"
-              value={bedrooms}
-              onChange={(e) => setBedrooms(e.target.value)}
-              disabled={loading}
-            >
-              <option value="">No Selection</option>
-              {bedroomOptions.map((beds) => (
-                <option key={beds} value={beds}>
-                  {beds}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-        <div className="error-search">
-          {error && <p className="error-message">{error}</p>}
-          <button className="search-button" onClick={handleSearch}>Search</button>
-        </div>
-      </header>
-
-      <main className="bottom-section">
-        <h3>Your Search Results:</h3>
-          {loading && (
-            <div className="loading-spinner-container">
-              <div className="loading-spinner"></div>
+              <label htmlFor="location" className="input-label">
+                Location
+              </label>
+              <input
+                type="text"
+                id="location"
+                placeholder="Enter desired location"
+                className="input-field"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                required
+                disabled={loading}
+              />
             </div>
-          )}
 
-          {!loading && listings.length > 0 ? (
-            <div className="listings-grid">
-              {listings.map((listing) => (
-                <div 
-                  key={listing._id} 
-                  className="listing-parent"
-                  onMouseMove={handleMouseMove}
-                  onMouseLeave={handleMouseLeave}
-                >
-                  <div className="listing-card">
-                    {listing.images?.picture_url && (
-                      <div className="listing-image-container">
-                        <img
-                          src={listing.images.picture_url}
-                          alt={listing.name || 'Listing image'}
-                          className="listing-image"
-                          onError={(e) => {
-                            e.currentTarget.src = '/no-image.avif';
-                          }}
-                        />
+            <div className="input-group">
+              <label htmlFor="property-type" className="input-label">
+                Property Type
+              </label>
+              <select
+                id="property-type"
+                className="input-field"
+                value={property_type}
+                onChange={(e) => setPropertyType(e.target.value)}
+                disabled={loading}
+              >
+                <option value="">No Selection</option>
+                {propertyTypeOptions.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="input-group">
+              <label htmlFor="bedrooms" className="input-label">
+                Number of Bedrooms
+              </label>
+              <select
+                id="bedrooms"
+                className="input-field"
+                value={bedrooms}
+                onChange={(e) => setBedrooms(e.target.value)}
+                disabled={loading}
+              >
+                <option value="">No Selection</option>
+                {bedroomOptions.map((beds) => (
+                  <option key={beds} value={beds}>
+                    {beds}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <div className="error-search">
+            {error && <p className="error-message">{error}</p>}
+            <button className="search-button" onClick={handleSearch}>Search</button>
+          </div>
+        </header>
+
+        <main className="bottom-section">
+          <h3>Your Search Results:</h3>
+            {loading && (
+              <div className="loading-spinner-container">
+                <div className="loading-spinner"></div>
+              </div>
+            )}
+
+            {!loading && listings.length > 0 ? (
+              <div className="listings-grid">
+                {listings.map((listing) => (
+                  <div 
+                    key={listing._id} 
+                    className="listing-parent"
+                    onMouseMove={handleMouseMove}
+                    onMouseLeave={handleMouseLeave}
+                  >
+                    <div className="listing-card">
+                      {listing.images?.picture_url && (
+                        <div className="listing-image-container">
+                          <img
+                            src={listing.images.picture_url}
+                            alt={listing.name || 'Listing image'}
+                            className="listing-image"
+                            onError={(e) => {
+                              e.currentTarget.src = '/no-image.avif';
+                            }}
+                          />
+                        </div>
+                      )}
+                      <div className="pop">
+                          <p className="listing-name" style={{cursor: 'pointer'}} onClick={() => handleBookClick(listing)}>{listing.name && listing.name != "" ? toTitleCase(listing.name) : 'No Title'}</p>
                       </div>
-                    )}
-                    <div className="pop">
-                      <Link href={`/bookings/${listing._id}`} passHref>
-                          <p className="listing-name">{listing.name && listing.name != "" ? toTitleCase(listing.name) : 'No Title'}</p>
-                      </Link>
-                    </div>
-                    <p className="listing-summary">{listing.summary && listing.summary != "" ? listing.summary : 'No description provided'}</p>
-                    
-                    <div className="card-details-container">
-                        <div className="price-box">
-                            <span className="price-label">Daily Rate</span>
-                            <span className="price-value">${listing.price.$numberDecimal ?? 'N/A'}</span>
-                        </div>
-                        <div className="rating-box">
-                            <span className="rating-label">Customer Rating</span>
-                            <span className="rating-value">
-                              {listing.review_scores.review_scores_rating ? (
-                                <>
-                                  {listing.review_scores.review_scores_rating} 
-                                  <span className="rating-scale">/100</span>
-                                </>
-                              ) : 'N/A'}
-                            </span>
-                        </div>
-                    </div>
+                      <p className="listing-summary">{listing.summary && listing.summary != "" ? listing.summary : 'No description provided'}</p>
+                      
+                      <div className="card-details-container">
+                          <div className="price-box">
+                              <span className="price-label">Daily Rate</span>
+                              <span className="price-value">${listing.price.$numberDecimal ?? 'N/A'}</span>
+                          </div>
+                          <div className="rating-box">
+                              <span className="rating-label">Customer Rating</span>
+                              <span className="rating-value">
+                                {listing.review_scores.review_scores_rating ? (
+                                  <>
+                                    {listing.review_scores.review_scores_rating} 
+                                    <span className="rating-scale">/100</span>
+                                  </>
+                                ) : 'N/A'}
+                              </span>
+                          </div>
+                      </div>
 
-                    <div className="pop">
-                      <Link href={`/bookings/${listing._id}`} passHref>
-                          <div className="book-button">Book</div>
-                      </Link>
-                    </div>
+                      <div className="pop">
+                          <div className="book-button" onClick={() => handleBookClick(listing)}>Book</div>
+                      </div>
 
-                    <p className="listing-misc">{listing.bedrooms} bedroom {listing.property_type.toLowerCase()} in {listing.address.market}.</p>
+                      <p className="listing-misc">{listing.bedrooms} bedroom {listing.property_type.toLowerCase()} in {listing.address.market}.</p>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          ) : ( !loading && !error &&
-            <p>No matching results found.</p>
-          )}
-      </main>
-    </div>
+                ))}
+              </div>
+            ) : ( !loading && !error &&
+              <p>No matching results found.</p>
+            )}
+        </main>
+      </div>
+      {selectedListing && <BookingModal listing={selectedListing} onClose={handleCloseModal} />}
+    </>
   );
 }
+

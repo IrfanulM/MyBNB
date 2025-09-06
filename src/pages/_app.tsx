@@ -8,7 +8,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <Layout>
       <Head>
         <title>MyBNB</title>
-        <meta name="description" content="A full-stack web application for booking property listings." />
+        <meta name="description" content="A web application for booking property listings." />
       </Head>
       <Component {...pageProps} />
     </Layout>
