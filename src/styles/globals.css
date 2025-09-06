@@ -9,6 +9,10 @@ html, body, #root {
   font-family: 'Archivo', sans-serif;
 }
 
+::-webkit-scrollbar {
+  display: none;
+}
+
 .page-container {
   display: flex;
   flex-direction: column;
@@ -558,6 +562,21 @@ html, body, #root {
   font-weight: 700;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
   padding-right: 4rem; 
+  transition: transform 0.3s ease-in-out;
+}
+
+.booking-modal-card h1:hover {
+  transform: scale(1.02);
+}
+
+.booking-modal-card .summary,
+.booking-modal-card .rate {
+    transition: transform 0.3s ease-in-out;
+}
+
+.booking-modal-card .summary:hover,
+.booking-modal-card .rate:hover {
+    transform: scale(1.01);
 }
 
 .booking-modal-card form {
@@ -566,6 +585,7 @@ html, body, #root {
   background-color: rgba(45, 45, 45, 0.7);
   border-radius: 10px;
   box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease-in-out;
 }
 
 .booking-modal-card form h2 {
@@ -574,18 +594,28 @@ html, body, #root {
   font-size: 1.8rem;
   border-bottom: 2px solid rgba(255, 255, 255, 0.1);
   padding-bottom: 10px;
+  transition: transform 0.3s ease-in-out;
 }
 
-.booking-modal-card form div {
-  margin-bottom: 20px;
+.booking-modal-card form h2:hover {
+  transform: scale(1.01);
 }
 
 .booking-modal-card form label {
   display: block;
   font-size: 1rem;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   color: #e0e0e0;
   font-weight: 500;
+}
+
+.booking-modal-card form div {
+  margin-bottom: 20px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.booking-modal-card form div:hover {
+  transform: scale(1.01);
 }
 
 .booking-modal-card form input[type="text"],
@@ -601,8 +631,16 @@ html, body, #root {
   font-size: 1rem;
   outline: none;
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, border-color 0.3s ease-in-out;
 }
+
+.booking-modal-card form input[type="text"]:hover,
+.booking-modal-card form input[type="email"]:hover,
+.booking-modal-card form input[type="tel"]:hover,
+.booking-modal-card form input[type="date"]:hover {
+    transform: scale(1.02);
+}
+
 
 .booking-modal-card form input[type="text"]:focus,
 .booking-modal-card form input[type="email"]:focus,
@@ -635,8 +673,8 @@ html, body, #root {
 }
 
 .booking-modal-card form button[type="submit"]:hover {
-  background-color: #000000;
-  transform: translateY(-2px);
+  background-color: #e25858;
+  transform: translateY(-2px) scale(1.02);
 }
 
 .booking-modal-card form button[type="submit"]:active {
