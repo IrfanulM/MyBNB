@@ -4,11 +4,11 @@ const Footer = () => {
   return (
     <footer className="footer">
       <div className="footer-content">
-        <p>&copy; {new Date().getFullYear()} MyBNB. All rights reserved.</p>
+        <p>&copy; {new Date().getFullYear()} Irfanul Majumder</p>
         <div className="footer-links">
-          <a href="#">Privacy Policy</a>
+          <a href="https://github.com/IrfanulM">GitHub</a>
           <span>|</span>
-          <a href="#">Terms of Service</a>
+          <a href="https://www.linkedin.com/in/irfanul-majumder">LinkedIn</a>
         </div>
       </div>
     </footer>
