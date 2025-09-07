@@ -47,12 +47,15 @@ html, body, #root {
   z-index: 5;
 }
 
-/* REPLACE the old search styles with these */
 .search-bar-wrapper {
   display: flex;
   justify-content: center;
   width: 100%;
   z-index: 15;
+}
+
+.search-bar-wrapper #location {
+  caret-color: auto;
 }
 
 .search-bar-container {

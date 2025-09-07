@@ -7,7 +7,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
   try {
     const { location, property_type, bedrooms } = req.body;
-    const query: any = { 'address.market': location };
+    
+    const query: any = {};
+
+    if (location && typeof location === 'string' && location.trim() !== '') {
+      const locationRegex = new RegExp(location.trim(), 'i');
+
+      query.$or = [
+        { 'address.street': locationRegex },
+        { 'address.suburb': locationRegex },
+        { 'address.government_area': locationRegex },
+        { 'address.market': locationRegex },
+        { 'address.country': locationRegex }
+      ];
+    }
 
     if (property_type) {
       query.property_type = property_type;
@@ -19,6 +32,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const client = await clientPromise;
     const db = client.db(process.env.DB_NAME);
     const filteredListings = await db.collection('listingsAndReviews').find(query).toArray();
+    
     res.status(200).json(filteredListings);
   } catch (error) {
     console.error(error);

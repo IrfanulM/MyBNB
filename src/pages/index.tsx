@@ -168,7 +168,7 @@ export default function HomePage() {
             <div className="search-bar-container" ref={searchBarRef}>
               
               {/* Location Field */}
-              <div 
+              <div
                 className={`search-field ${activeField === 'location' ? 'active' : ''}`} 
                 onClick={() => { setActiveField('location'); setOpenDropdown(null); }}
               >
