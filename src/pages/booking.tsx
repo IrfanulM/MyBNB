@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { listingsApi, Listing } from '../services/api';
+import Calendar from '../components/Calendar';
 
 interface BookingModalProps {
   listing: Listing;
@@ -22,6 +23,12 @@ export default function BookingModal({ listing, onClose, isAuthenticated, email:
   const [mobile, setMobile] = useState("");
   const [postalAddress, setPostalAddress] = useState("");
   const [residentialAddress, setResidentialAddress] = useState("");
+  
+  const [showCalendar, setShowCalendar] = useState<string | null>(null);
+  const datePickerRef = useRef<HTMLDivElement>(null);
+  
+  const today = new Date();
+  today.setHours(0,0,0,0);
 
   useEffect(() => {
     if (isAuthenticated && userEmail) {
@@ -29,10 +36,26 @@ export default function BookingModal({ listing, onClose, isAuthenticated, email:
     }
   }, [isAuthenticated, userEmail]);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (datePickerRef.current && !datePickerRef.current.contains(event.target as Node)) {
+        setShowCalendar(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     setError("");
+
+    if (!checkIn || !checkOut) {
+        setError("Please select both check-in and check-out dates.");
+        setLoading(false);
+        return;
+    }
 
     if (new Date(checkIn) >= new Date(checkOut)) {
       setError("Check-out date must be after the check-in date.");
@@ -63,13 +86,7 @@ export default function BookingModal({ listing, onClose, isAuthenticated, email:
       setLoading(false);
     }
   };
-
-  const todayDate = new Date();
-  const year = todayDate.getFullYear();
-  const month = (todayDate.getMonth() + 1).toString().padStart(2, '0');
-  const day = todayDate.getDate().toString().padStart(2, '0');
-  const today = `${year}-${month}-${day}`;
-
+  
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="booking-modal-card" onClick={(e) => e.stopPropagation()}>
@@ -79,36 +96,41 @@ export default function BookingModal({ listing, onClose, isAuthenticated, email:
         <div className="rate">${listing.price.$numberDecimal} per day</div>
         <form onSubmit={handleSubmit}>
           <h2>Booking Details</h2>
-          <div>
-            <label htmlFor="check-in">Check In*:</label>
-            <input
-              type="date"
-              id="check-in"
-              name="checkIn"
-              required
-              value={checkIn}
-              min={today}
-              onChange={(e) => {
-                setCheckIn(e.target.value);
-                if (checkOut && e.target.value > checkOut) {
-                  setCheckOut('');
-                }
-              }}
-              disabled={loading}
-            />
-          </div>
-          <div>
-            <label htmlFor="check-out">Check Out*:</label>
-            <input
-              type="date"
-              id="check-out"
-              name="checkOut"
-              required
-              value={checkOut}
-              min={checkIn || today}
-              onChange={(e) => setCheckOut(e.target.value)}
-              disabled={loading || !checkIn}
-            />
+          <div ref={datePickerRef}>
+            <div className={`date-picker-container ${showCalendar === 'checkIn' ? 'calendar-active' : ''}`}>
+              <label htmlFor="check-in">Check In*:</label>
+              <div className="date-picker-wrapper">
+                <div 
+                  className={`date-input-trigger ${showCalendar === 'checkIn' ? 'active' : ''}`}
+                  onClick={() => setShowCalendar(showCalendar === 'checkIn' ? null : 'checkIn')}
+                >
+                  {checkIn || 'Select a date'}
+                </div>
+                {showCalendar === 'checkIn' && 
+                  <Calendar 
+                    onSelectDate={(date) => { setCheckIn(date); setShowCalendar(null); }} 
+                    initialDate={new Date()}
+                    minDate={today}
+                  />}
+              </div>
+            </div>
+            <div className={`date-picker-container ${showCalendar === 'checkOut' ? 'calendar-active' : ''}`}>
+              <label htmlFor="check-out">Check Out*:</label>
+               <div className="date-picker-wrapper">
+                <div 
+                  className={`date-input-trigger ${showCalendar === 'checkOut' ? 'active' : ''}`}
+                  onClick={() => checkIn && setShowCalendar(showCalendar === 'checkOut' ? null : 'checkOut')}
+                >
+                  {checkOut || 'Select a date'}
+                </div>
+                {showCalendar === 'checkOut' && 
+                  <Calendar 
+                    onSelectDate={(date) => { setCheckOut(date); setShowCalendar(null); }} 
+                    initialDate={checkIn ? new Date(checkIn) : new Date()}
+                    minDate={checkIn ? new Date(new Date(checkIn).getTime() + 86400000) : today}
+                  />}
+              </div>
+            </div>
           </div>
           <h2>Your Details</h2>
           <div>
@@ -145,6 +167,7 @@ export default function BookingModal({ listing, onClose, isAuthenticated, email:
               name="mobile"
               placeholder="04xxxxxxxx"
               maxLength={10}
+              minLength={10}
               required
               value={mobile}
               onChange={(e) => setMobile(e.target.value)}
@@ -175,7 +198,7 @@ export default function BookingModal({ listing, onClose, isAuthenticated, email:
               disabled={loading}
             />
           </div>
-           {!isAuthenticated && (
+          {!isAuthenticated && (
             <p className="disclaimer-text">
               Want to see your bookings on our site? <Link href="/signup">Sign up</Link> first.
             </p>
