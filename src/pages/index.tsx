@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { listingsApi, Listing } from '../services/api';
 import BookingModal from '../pages/booking';
 
 export default function HomePage() {
-  const [error, setError] = useState<String>("");
+  const [error, setError] = useState<string>("");
   const [listings, setListings] = useState<Listing[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const [location, setLocation] = useState<string>("");
   const [property_type, setPropertyType] = useState<string>("");
@@ -16,12 +16,15 @@ export default function HomePage() {
   
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
   const [authStatus, setAuthStatus] = useState<{ isAuthenticated: boolean; email?: string }>({ isAuthenticated: false });
+  const [activeField, setActiveField] = useState<string | null>(null);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  
+  const searchBarRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchAllInitialData = async () => {
       setLoading(true);
       setError("");
-
       try {
         const [
           fetchedListings,
@@ -38,7 +41,6 @@ export default function HomePage() {
         setPropertyTypeOptions(fetchedPropertyTypes);
         setBedroomOptions(fetchedBedrooms);
         setAuthStatus(status);
-
       } catch (err) {
         setError("Failed to load page data. Please try refreshing.");
         console.error(err);
@@ -46,8 +48,20 @@ export default function HomePage() {
         setLoading(false);
       }
     };
-
+    
     fetchAllInitialData();
+
+    const handleClickOutside = (event: MouseEvent) => {
+        if (searchBarRef.current && !searchBarRef.current.contains(event.target as Node)) {
+            setActiveField(null);
+            setOpenDropdown(null);
+        }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, []);
   
   useEffect(() => {
@@ -99,7 +113,7 @@ export default function HomePage() {
         .split(' ')
         .map(word => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ');
-}
+  }
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const cardParent = e.currentTarget;
@@ -133,69 +147,95 @@ export default function HomePage() {
     card.style.transform = 'rotateX(0deg) rotateY(0deg)';
   };
 
+  const handleDropdownToggle = (field: string) => {
+    setOpenDropdown(openDropdown === field ? null : field);
+  };
+
+  const handleOptionSelect = (field: string, value: string) => {
+    if (field === 'property_type') {
+      setPropertyType(value);
+    } else if (field === 'bedrooms') {
+      setBedrooms(value);
+    }
+    setOpenDropdown(null);
+  };
+
   return (
     <>
       <div className="page-container">
         <header className="top-section">
-          <div className="input-group-container">
-            <div className="input-group">
-
-              <label htmlFor="location" className="input-label">
-                Location
-              </label>
-              <input
-                type="text"
-                id="location"
-                placeholder="Enter desired location"
-                className="input-field"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                required
-                disabled={loading}
-              />
-            </div>
-
-            <div className="input-group">
-              <label htmlFor="property-type" className="input-label">
-                Property Type
-              </label>
-              <select
-                id="property-type"
-                className="input-field"
-                value={property_type}
-                onChange={(e) => setPropertyType(e.target.value)}
-                disabled={loading}
+          <div className="search-bar-wrapper">
+            <div className="search-bar-container" ref={searchBarRef}>
+              
+              {/* Location Field */}
+              <div 
+                className={`search-field ${activeField === 'location' ? 'active' : ''}`} 
+                onClick={() => { setActiveField('location'); setOpenDropdown(null); }}
               >
-                <option value="">No Selection</option>
-                {propertyTypeOptions.map((type) => (
-                  <option key={type} value={type}>
-                    {type}
-                  </option>
-                ))}
-              </select>
-            </div>
+                <label htmlFor="location">Location</label>
+                <input
+                  id="location"
+                  type="text"
+                  placeholder="Enter desired location"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  disabled={loading}
+                />
+              </div>
 
-            <div className="input-group">
-              <label htmlFor="bedrooms" className="input-label">
-                Number of Bedrooms
-              </label>
-              <select
-                id="bedrooms"
-                className="input-field"
-                value={bedrooms}
-                onChange={(e) => setBedrooms(e.target.value)}
-                disabled={loading}
+              <div className="search-field-separator"></div>
+
+              {/* Property Type Field */}
+              <div 
+                className={`search-field ${activeField === 'property_type' ? 'active' : ''}`}
+                onClick={() => setActiveField('property_type')}
               >
-                <option value="">No Selection</option>
-                {bedroomOptions.map((beds) => (
-                  <option key={beds} value={beds}>
-                    {beds}
-                  </option>
-                ))}
-              </select>
+                <label>Property Type</label>
+                <div className="custom-select-wrapper">
+                  <div className="custom-select-trigger" onClick={() => handleDropdownToggle('property_type')}>
+                    {property_type || 'Any'}
+                  </div>
+                  {openDropdown === 'property_type' && (
+                    <div className="custom-options">
+                      <div className="custom-option" onClick={() => handleOptionSelect('property_type', '')}>Any</div>
+                      {propertyTypeOptions.map((type) => (
+                        <div key={type} className="custom-option" onClick={() => handleOptionSelect('property_type', type)}>
+                          {type}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="search-field-separator"></div>
+
+              {/* Bedrooms Field */}
+              <div 
+                className={`search-field ${activeField === 'bedrooms' ? 'active' : ''}`}
+                onClick={() => setActiveField('bedrooms')}
+              >
+                <label>Number of Bedrooms</label>
+                 <div className="custom-select-wrapper">
+                  <div className="custom-select-trigger" onClick={() => handleDropdownToggle('bedrooms')}>
+                    {bedrooms || 'Any'}
+                  </div>
+                  {openDropdown === 'bedrooms' && (
+                    <div className="custom-options">
+                      <div className="custom-option" onClick={() => handleOptionSelect('bedrooms', '')}>Any</div>
+                      {bedroomOptions.map((beds) => (
+                        <div key={beds} className="custom-option" onClick={() => handleOptionSelect('bedrooms', beds)}>
+                          {beds}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
             </div>
           </div>
-          <div className="error-search">
+          <div className="search-button-wrapper">
             {error && <p className="error-message">{error}</p>}
             <button className="search-button" onClick={handleSearch}>Search</button>
           </div>
