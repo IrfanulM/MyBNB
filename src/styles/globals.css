@@ -83,6 +83,15 @@ html, body, #root {
   transition: flex 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
+.search-field input:-webkit-autofill,
+.search-field input:-webkit-autofill:hover, 
+.search-field input:-webkit-autofill:focus, 
+.search-field input:-webkit-autofill:active {
+    -webkit-text-fill-color: #555 !important;
+    -webkit-box-shadow: 0 0 0 30px white inset !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
 .search-field-separator {
   width: 1px;
   background-color: #e0e0e0;
@@ -197,6 +206,9 @@ html, body, #root {
 
 .search-button-wrapper {
     margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .search-button {

@@ -29,9 +29,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       query.bedrooms = parseInt(bedrooms, 10);
     }
 
+    const projection = {
+      name: 1,
+      summary: 1,
+      'images.picture_url': 1,
+      price: 1,
+      'review_scores.review_scores_rating': 1,
+      bedrooms: 1,
+      property_type: 1,
+      'address.market': 1
+    };
+
     const client = await clientPromise;
     const db = client.db(process.env.DB_NAME);
-    const filteredListings = await db.collection('listingsAndReviews').find(query).toArray();
+    const filteredListings = await db.collection('listingsAndReviews')
+      .find(query)
+      .project(projection)
+      .toArray();
     
     res.status(200).json(filteredListings);
   } catch (error) {

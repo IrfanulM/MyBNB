@@ -18,6 +18,8 @@ export default function HomePage() {
   const [authStatus, setAuthStatus] = useState<{ isAuthenticated: boolean; email?: string }>({ isAuthenticated: false });
   const [activeField, setActiveField] = useState<string | null>(null);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+
+  const [searchSummary, setSearchSummary] = useState<string>("Displaying 15 random listings...");
   
   const searchBarRef = useRef<HTMLDivElement>(null);
 
@@ -84,24 +86,33 @@ export default function HomePage() {
   };
 
   const handleSearch = async () => {
-    if (!location) {
-      setError("You must enter a location.");
+    if (!location && !property_type && !bedrooms) {
+      setError("Please enter at least one search criteria.");
       return;
     }
 
     setLoading(true);
+    setError("");
     try {
       const filterParams = {
-        location: location,
+        location: location || undefined,
         property_type: property_type || undefined,
         bedrooms: bedrooms || undefined,
       };
       const fetchedSearchResults: Listing[] = await listingsApi.getSearchResults(filterParams);
       setListings(fetchedSearchResults);
-      setError("");
+      
+      // Build the dynamic search summary
+      let summary = `${fetchedSearchResults.length} result(s) found`;
+      if (location) summary += ` in "${location}"`;
+      if (property_type) summary += ` for "${property_type}"`;
+      if (bedrooms) summary += ` with ${bedrooms} bedroom(s)`;
+      setSearchSummary(summary);
+
     } catch {
       setError("Failed to fetch search results. Please try again.");
       setListings([]);
+      setSearchSummary("No results found.");
     } finally {
       setLoading(false);
     }
@@ -242,7 +253,7 @@ export default function HomePage() {
         </header>
 
         <main className="bottom-section">
-          <h3>Your Search Results:</h3>
+          <h3>{searchSummary}</h3>
             {loading && (
               <div className="loading-spinner-container">
                 <div className="loading-spinner"></div>

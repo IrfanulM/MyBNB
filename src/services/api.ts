@@ -52,7 +52,7 @@ export const listingsApi = {
     const response = await fetch('/api/bedrooms');
     return await response.json();
   },
-  getSearchResults: async (filterParams: { location: string; propertyType?: string; bedrooms?: string; }): Promise<Listing[]> => {
+  getSearchResults: async (filterParams: { location?: string; property_type?: string; bedrooms?: string; }): Promise<Listing[]> => {
     const response = await fetch('/api/search', {
       method: 'POST',
       headers: {
