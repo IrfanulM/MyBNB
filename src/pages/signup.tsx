@@ -1,10 +1,8 @@
 import { useState } from 'react';
-import { useRouter } from 'next/router';
 import { listingsApi } from '../services/api';
 import Link from 'next/link';
 
 export default function SignUp() {
-    const router = useRouter();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -16,7 +14,7 @@ export default function SignUp() {
         setError('');
         try {
             await listingsApi.signup({ email, password });
-            router.push('/signin');
+            window.location.href = '/signin';
         } catch (err: any) {
             setError(err.message);
         } finally {

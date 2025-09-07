@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -9,38 +9,40 @@ const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    const checkAuthStatus = () => {
-      const token = document.cookie.split(';').some((item) => item.trim().startsWith('token='));
-      setIsLoggedIn(token);
-    };
+  const checkAuthStatus = useCallback(async () => {
+    const { isAuthenticated } = await listingsApi.getAuthStatus();
+    setIsLoggedIn(isAuthenticated);
+  }, []);
 
+  useEffect(() => {
     checkAuthStatus();
 
-    // Re-check auth status on route change
     router.events.on('routeChangeComplete', checkAuthStatus);
 
-    const topSection = document.querySelector('.top-section') as HTMLElement | null;
-    if (!topSection) return;
-    const topSectionHeight = topSection.offsetHeight;
-
     const handleScroll = () => {
-      setVisible(window.scrollY < topSectionHeight);
+      const topSection = document.querySelector('.top-section') as HTMLElement | null;
+      
+      if (topSection) {
+        setVisible(window.scrollY < topSection.offsetHeight);
+      } else {
+        setVisible(window.scrollY < 50);
+      }
     };
-
+    
     window.addEventListener('scroll', handleScroll, { passive: true });
+
+    handleScroll();
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
       router.events.off('routeChangeComplete', checkAuthStatus);
     };
-  }, [router.events]);
+  }, [router.events, checkAuthStatus]);
 
   const handleSignOut = async () => {
     try {
       await listingsApi.signout();
-      setIsLoggedIn(false);
-      router.push('/');
+      window.location.href = '/';
     } catch (error) {
       console.error('Failed to sign out', error);
     }

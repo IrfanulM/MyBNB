@@ -114,4 +114,15 @@ export const listingsApi = {
     }
     return data;
   },
+  getAuthStatus: async (): Promise<{ isAuthenticated: boolean; email?: string }> => {
+    try {
+      const response = await fetch('/api/auth/status');
+      if (!response.ok) {
+        return { isAuthenticated: false };
+      }
+      return await response.json();
+    } catch (error) {
+      return { isAuthenticated: false };
+    }
+  },
 }
