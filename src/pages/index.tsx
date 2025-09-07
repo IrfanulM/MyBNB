@@ -15,6 +15,7 @@ export default function HomePage() {
   const [bedroomOptions, setBedroomOptions] = useState<string[]>([]);
   
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
+  const [authStatus, setAuthStatus] = useState<{ isAuthenticated: boolean; email?: string }>({ isAuthenticated: false });
 
   useEffect(() => {
     const fetchAllInitialData = async () => {
@@ -26,14 +27,17 @@ export default function HomePage() {
           fetchedListings,
           fetchedPropertyTypes,
           fetchedBedrooms,
+          status,
         ] = await Promise.all([
           listingsApi.getInitialListings(),
           listingsApi.getAllPropertyTypes(),
           listingsApi.getBedrooms(),
+          listingsApi.getAuthStatus(),
         ]);
         setListings(fetchedListings);
         setPropertyTypeOptions(fetchedPropertyTypes);
         setBedroomOptions(fetchedBedrooms);
+        setAuthStatus(status);
 
       } catch (err) {
         setError("Failed to load page data. Please try refreshing.");
@@ -264,8 +268,13 @@ export default function HomePage() {
             )}
         </main>
       </div>
-      {selectedListing && <BookingModal listing={selectedListing} onClose={handleCloseModal} />}
+      {selectedListing && 
+        <BookingModal 
+          listing={selectedListing} 
+          onClose={handleCloseModal}
+          isAuthenticated={authStatus.isAuthenticated}
+          email={authStatus.email}
+        />}
     </>
   );
 }
-

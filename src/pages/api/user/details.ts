@@ -19,27 +19,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const client = await clientPromise;
         const db = client.db(process.env.DB_NAME);
 
-        const bookings = await db.collection('listingsAndReviews').aggregate([
-            { $match: { 'bookings.email': payload.email } },
-            { $unwind: '$bookings' },
-            { $match: { 'bookings.email': payload.email } },
-            {
-              $project: {
-                _id: 0,
-                listingName: '$name',
-                listingSummary: '$summary',
-                bookingId: '$bookings.bookingId',
-                checkIn: '$bookings.checkIn',
-                checkOut: '$bookings.checkOut',
-                name: '$bookings.name',
-                email: '$bookings.email',
-                mobile: '$bookings.mobile',
-              }
-            },
-            { $sort: { 'checkIn': -1 } }
-        ]).toArray();
+        const user = await db.collection('users').findOne({ email: payload.email });
 
-        res.status(200).json(bookings);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.status(200).json({
+            email: user.email,
+            createdAt: user.createdAt,
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal Server Error' });

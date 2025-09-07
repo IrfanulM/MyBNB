@@ -20,6 +20,23 @@ export interface Booking {
   mobile: string;
   postalAddress?: string;
   residentialAddress?: string;
+  timezoneOffset?: number;
+}
+
+export interface UserDetails {
+    email: string;
+    createdAt: string;
+}
+
+export interface UserBooking {
+  listingName: string;
+  listingSummary: string;
+  bookingId: string;
+  checkIn: string;
+  checkOut: string;
+  name: string;
+  email: string;
+  mobile: string;
 }
 
 export const listingsApi = {
@@ -96,8 +113,16 @@ export const listingsApi = {
     }
     return data;
   },
-  getUserBookings: async (): Promise<Listing[]> => {
+  getUserBookings: async (): Promise<UserBooking[]> => {
       const response = await fetch('/api/user/bookings');
+      const data = await response.json();
+      if (!response.ok) {
+          throw new Error(data.message || 'Something went wrong!');
+      }
+      return data;
+  },
+  getUserDetails: async (): Promise<UserDetails> => {
+      const response = await fetch('/api/user/details');
       const data = await response.json();
       if (!response.ok) {
           throw new Error(data.message || 'Something went wrong!');

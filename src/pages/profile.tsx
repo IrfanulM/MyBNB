@@ -1,16 +1,22 @@
 import { useState, useEffect } from 'react';
-import { listingsApi, Listing } from '../services/api';
+import { listingsApi, UserBooking, UserDetails } from '../services/api';
+import Link from 'next/link';
 
 export default function Profile() {
-    const [bookings, setBookings] = useState<Listing[]>([]);
+    const [bookings, setBookings] = useState<UserBooking[]>([]);
+    const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
     useEffect(() => {
-        const fetchBookings = async () => {
+        const fetchProfileData = async () => {
             try {
-                const userBookings = await listingsApi.getUserBookings();
+                const [userBookings, details] = await Promise.all([
+                    listingsApi.getUserBookings(),
+                    listingsApi.getUserDetails(),
+                ]);
                 setBookings(userBookings);
+                setUserDetails(details);
             } catch (err: any) {
                 setError(err.message);
             } finally {
@@ -18,11 +24,11 @@ export default function Profile() {
             }
         };
 
-        fetchBookings();
+        fetchProfileData();
     }, []);
 
     if (loading) {
-        return <p className="loading-message">Loading your bookings...</p>;
+        return <p className="loading-message">Loading your profile...</p>;
     }
 
     if (error) {
@@ -31,19 +37,42 @@ export default function Profile() {
 
     return (
         <div className="profile-page">
-            <h1>Your Bookings</h1>
-            {bookings.length > 0 ? (
-                <div className="bookings-grid">
-                    {bookings.map((booking) => (
-                        <div key={booking._id} className="booking-card">
-                            <h2>{booking.name}</h2>
-                            <p>{booking.summary}</p>
-                        </div>
-                    ))}
+            <div className="profile-container">
+                <div className="profile-details-card">
+                    <h2>Profile Information</h2>
+                    {userDetails && (
+                        <>
+                            <p><strong>Email:</strong> {userDetails.email}</p>
+                            <p><strong>Member Since:</strong> {new Date(userDetails.createdAt).toLocaleDateString()}</p>
+                        </>
+                    )}
                 </div>
-            ) : (
-                <p>You have no bookings yet.</p>
-            )}
+
+                <div className="bookings-card">
+                    <h2>Your Bookings</h2>
+                    {bookings.length > 0 ? (
+                        <div className="bookings-grid">
+                            {bookings.map((booking) => (
+                                <div key={booking.bookingId} className="booking-item-card">
+                                    <h3>{booking.listingName}</h3>
+                                    <div className="booking-dates">
+                                        <p><strong>Check-in:</strong> {booking.checkIn}</p>
+                                        <p><strong>Check-out:</strong> {booking.checkOut}</p>
+                                    </div>
+                                    <Link href={{
+                                        pathname: `/confirmations/${booking.bookingId}`,
+                                        query: { ...booking }
+                                    }} passHref>
+                                        <button className="confirmation-button">View Confirmation</button>
+                                    </Link>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="empty-message">You have no bookings yet.</p>
+                    )}
+                </div>
+            </div>
         </div>
     );
 }

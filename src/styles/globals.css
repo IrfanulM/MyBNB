@@ -380,11 +380,31 @@ html, body, #root {
   border-radius: 1.5rem;
   padding: 3rem;
   width: 100%;
-  max-width: 25rem;
+  max-width: 32rem;
   box-shadow: 0 8px 24px rgba(214, 58, 58, 0.5);
   color: #eaeaea;
   display: flex;
   flex-direction: column;
+}
+
+.back-button {
+  background-color: #363636;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.7rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-bottom: 2rem;
+  align-self: flex-start;
+  text-decoration: none; /* Removes underline from Link */
+}
+
+.back-button:hover {
+  background-color: #000000;
+  transform: translateY(-2px);
 }
 
 .confirmation-title {
@@ -397,6 +417,8 @@ html, body, #root {
 
 .confirmation-subtitle {
   font-size: 1.1rem;
+  padding-left: 3rem;
+  padding-right: 3rem;
   text-align: center;
   color: #cccccc;
   margin-top: -1rem;
@@ -415,6 +437,11 @@ html, body, #root {
   margin-bottom: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+}
+
+.confirmation-section p {
+    font-size: 1.1rem;
+    line-height: 1.8;
 }
 
 .field-label {
@@ -856,45 +883,101 @@ html, body, #root {
     min-height: 100vh;
 }
 
-.profile-page h1 {
-    color: #ff6b6b;
-    margin-bottom: 2rem;
-    text-align: center;
-    font-size: 2.5rem;
-}
-
-.bookings-grid {
+.profile-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: 1fr 2fr;
+    gap: 2rem;
     max-width: 1400px;
     margin: 0 auto;
 }
 
-.booking-card {
+.profile-details-card,
+.bookings-card {
     background-color: #1d1d1d;
     padding: 1.5rem;
     border-radius: 12px;
     border: 1px solid #333;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.booking-card:hover {
+.profile-details-card h2,
+.bookings-card h2 {
+    color: #ff6b6b;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+    border-bottom: 1px solid #444;
+    padding-bottom: 1rem;
+}
+
+.profile-details-card p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+}
+
+.bookings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.booking-item-card {
+    background-color: #2a2a2a;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid #444;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.booking-item-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
 }
 
-.booking-card h2 {
+.booking-item-card h3 {
     color: #ff6b6b;
     margin-top: 0;
     margin-bottom: 0.75rem;
-    font-size: 1.6rem;
+    font-size: 1.4rem;
 }
 
-.booking-card p {
+.booking-item-card p {
     color: #b0b0b0;
     font-size: 1rem;
     line-height: 1.6;
+}
+
+.booking-dates {
+    background-color: #1d1d1d;
+    border-radius: 4px;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+}
+
+.booking-dates p {
+    margin: 0.25rem 0;
+    color: #eaeaea;
+}
+
+.confirmation-button {
+  background-color: #ff6b6b;
+  color: #141414;
+  font-weight: 700;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem;
+  width: 100%;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: auto;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.confirmation-button:hover {
+  background-color: #e25858;
+  transform: translateY(-2px);
 }
 
 .loading-message, .empty-message {
@@ -902,4 +985,22 @@ html, body, #root {
     color: #999;
     margin-top: 3rem;
     font-size: 1.2rem;
+}
+
+@media (max-width: 900px) {
+    .profile-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+.disclaimer-text {
+  font-size: 0.9rem;
+  text-align: center;
+  color: #c0c0c0;
+  margin-top: 1.5rem;
+}
+
+.disclaimer-text a {
+  color: #ff6b6b;
+  text-decoration: underline;
 }

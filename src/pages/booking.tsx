@@ -1,13 +1,16 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import { listingsApi, Listing } from '../services/api';
 
 interface BookingModalProps {
   listing: Listing;
   onClose: () => void;
+  isAuthenticated: boolean;
+  email?: string;
 }
 
-export default function BookingModal({ listing, onClose }: BookingModalProps) {
+export default function BookingModal({ listing, onClose, isAuthenticated, email: userEmail }: BookingModalProps) {
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
@@ -20,11 +23,25 @@ export default function BookingModal({ listing, onClose }: BookingModalProps) {
   const [postalAddress, setPostalAddress] = useState("");
   const [residentialAddress, setResidentialAddress] = useState("");
 
+  useEffect(() => {
+    if (isAuthenticated && userEmail) {
+      setEmail(userEmail);
+    }
+  }, [isAuthenticated, userEmail]);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     setError("");
+
+    if (new Date(checkIn) >= new Date(checkOut)) {
+      setError("Check-out date must be after the check-in date.");
+      setLoading(false);
+      return;
+    }
+
     try {
+      const timezoneOffset = new Date().getTimezoneOffset();
       const booking = await listingsApi.createBooking({
         listingId: listing._id,
         checkIn,
@@ -34,17 +51,24 @@ export default function BookingModal({ listing, onClose }: BookingModalProps) {
         mobile,
         postalAddress,
         residentialAddress,
+        timezoneOffset,
       });
       router.push({
         pathname: `/confirmations/${booking.bookingId}`,
         query: { ...booking },
       });
-    } catch {
-      setError("Booking failed. Please try again.");
+    } catch (err: any) {
+      setError(err.message || "Booking failed. Please try again.");
     } finally {
       setLoading(false);
     }
   };
+
+  const todayDate = new Date();
+  const year = todayDate.getFullYear();
+  const month = (todayDate.getMonth() + 1).toString().padStart(2, '0');
+  const day = todayDate.getDate().toString().padStart(2, '0');
+  const today = `${year}-${month}-${day}`;
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -63,7 +87,13 @@ export default function BookingModal({ listing, onClose }: BookingModalProps) {
               name="checkIn"
               required
               value={checkIn}
-              onChange={(e) => setCheckIn(e.target.value)}
+              min={today}
+              onChange={(e) => {
+                setCheckIn(e.target.value);
+                if (checkOut && e.target.value > checkOut) {
+                  setCheckOut('');
+                }
+              }}
               disabled={loading}
             />
           </div>
@@ -75,8 +105,9 @@ export default function BookingModal({ listing, onClose }: BookingModalProps) {
               name="checkOut"
               required
               value={checkOut}
+              min={checkIn || today}
               onChange={(e) => setCheckOut(e.target.value)}
-              disabled={loading}
+              disabled={loading || !checkIn}
             />
           </div>
           <h2>Your Details</h2>
@@ -103,7 +134,7 @@ export default function BookingModal({ listing, onClose }: BookingModalProps) {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              disabled={loading}
+              disabled={loading || (isAuthenticated && !!userEmail)}
             />
           </div>
           <div>
@@ -144,6 +175,11 @@ export default function BookingModal({ listing, onClose }: BookingModalProps) {
               disabled={loading}
             />
           </div>
+           {!isAuthenticated && (
+            <p className="disclaimer-text">
+              Want to see your bookings on our site? <Link href="/signup">Sign up</Link> first.
+            </p>
+          )}
           {error && <p className="error-message" style={{textAlign: 'center', color: '#ff6b6b'}}>{error}</p>}
           <button type="submit" disabled={loading}>Book Now</button>
         </form>
