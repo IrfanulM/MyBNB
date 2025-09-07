@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { listingsApi } from '../services/api';
+import Logo from './Logo';
 
 const Navbar = () => {
   const [visible, setVisible] = useState(true);
@@ -52,8 +53,8 @@ const Navbar = () => {
     <nav className={`navbar ${!visible ? 'hidden' : ''}`}>
       <div className="navbar-container">
         <Link href="/" passHref>
-          <div className="navbar-logo" style={{ cursor: 'pointer' }}>
-            <Image src="/icon-text.svg" alt="MyBNB Logo" width={120} height={40} />
+          <div className="navbar-logo">
+            <Logo className="logo" />
           </div>
         </Link>
         <div className="navbar-links">
