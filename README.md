@@ -2,7 +2,7 @@
 
 A simplified, full-stack web application inspired by Airbnb. Browse, search, book listings, and manage your account. This project is built entirely with Next.js, utilizing its API Routes for all backend functionality, including user authentication and database management.
 
-[Live Demo](bedandbreakfast.vercel.app)
+[Live Demo](https://bedandbreakfast.vercel.app/)
 
 ## Features
 
