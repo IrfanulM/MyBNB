@@ -25,12 +25,13 @@ html, body, #root {
   color: #ffffff
 }
 
-.navbar-logo .logo:hover {
-  transform: scale(1.05);
-  color: rgb(255, 151, 151);
-  filter: drop-shadow(0 0 5px rgba(255, 107, 107, 0.7));
+@media (hover: hover) and (pointer: fine) {
+  .navbar-logo .logo:hover {
+    transform: scale(1.05);
+    color: rgb(255, 151, 151);
+    filter: drop-shadow(0 0 5px rgba(255, 107, 107, 0.7));
+  }
 }
-
 
 .top-section {
   background: linear-gradient(to right, #e25858, #ff6b6b);
