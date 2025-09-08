@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { listingsApi, Listing } from '../services/api';
-import Calendar from '../components/Calendar';
+import Calendar from './Calendar';
 
 interface BookingModalProps {
   listing: Listing;
@@ -80,8 +80,12 @@ export default function BookingModal({ listing, onClose, isAuthenticated, email:
         pathname: `/confirmations/${booking.bookingId}`,
         query: { ...booking },
       });
-    } catch (err: any) {
-      setError(err.message || "Booking failed. Please try again.");
+    } catch (err) {
+        if (err instanceof Error) {
+            setError(err.message || "Booking failed. Please try again.");
+        } else {
+            setError("An unknown error occurred. Please try again.");
+        }
     } finally {
       setLoading(false);
     }

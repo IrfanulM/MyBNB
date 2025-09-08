@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { listingsApi } from '../services/api';
 import Logo from './Logo';

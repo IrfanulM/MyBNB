@@ -16,8 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const secret = new TextEncoder().encode(process.env.JWT_SECRET);
     const { payload } = await jwtVerify(token, secret);
     return res.json({ isAuthenticated: true, email: payload.email });
-  } catch (error) {
-    // If token verification fails, it's invalid
+  } catch {
     return res.json({ isAuthenticated: false });
   }
 }

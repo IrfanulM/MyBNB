@@ -15,8 +15,12 @@ export default function SignIn() {
         try {
             await listingsApi.signin({ email, password });
             window.location.href = '/profile';
-        } catch (err: any) {
-            setError(err.message);
+        } catch (err) {
+            if (err instanceof Error) {
+                setError(err.message);
+            } else {
+                setError("An unknown error occurred.");
+            }
         } finally {
             setLoading(false);
         }
@@ -57,7 +61,7 @@ export default function SignIn() {
                     </button>
                 </form>
                 <p className="switch-auth-link">
-                    Don't have an account? <Link href="/signup">Sign Up</Link>
+                    Don&apos;t have an account? <Link href="/signup">Sign Up</Link>
                 </p>
             </div>
         </div>

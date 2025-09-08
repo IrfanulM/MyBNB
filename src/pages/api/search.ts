@@ -1,14 +1,20 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import clientPromise from '../../lib/mongodb';
 
+interface SearchQuery {
+  $or?: { [key: string]: RegExp }[];
+  property_type?: string;
+  bedrooms?: number;
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method Not Allowed' });
   }
   try {
     const { location, property_type, bedrooms } = req.body;
-    
-    const query: any = {};
+
+    const query: SearchQuery = {};
 
     if (location && typeof location === 'string' && location.trim() !== '') {
       const locationRegex = new RegExp(location.trim(), 'i');
@@ -46,7 +52,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       .find(query)
       .project(projection)
       .toArray();
-    
+
     res.status(200).json(filteredListings);
   } catch (error) {
     console.error(error);

@@ -39,6 +39,15 @@ export interface UserBooking {
   mobile: string;
 }
 
+export interface Credentials {
+  email?: string;
+  password?: string;
+}
+
+export interface ResponseMessage {
+  message: string;
+}
+
 export const listingsApi = {
   getInitialListings: async (): Promise<Listing[]> => {
     const response = await fetch('/api/initial');
@@ -85,7 +94,7 @@ export const listingsApi = {
     }
     return data;
   },
-  signup: async (credentials: any): Promise<any> => {
+  signup: async (credentials: Credentials): Promise<ResponseMessage> => {
       const response = await fetch('/api/auth/signup', {
           method: 'POST',
           headers: {
@@ -99,7 +108,7 @@ export const listingsApi = {
       }
       return data;
   },
-  signin: async (credentials: any): Promise<any> => {
+  signin: async (credentials: Credentials): Promise<ResponseMessage> => {
     const response = await fetch('/api/auth/signin', {
         method: 'POST',
         headers: {
@@ -129,7 +138,7 @@ export const listingsApi = {
       }
       return data;
   },
-  signout: async (): Promise<any> => {
+  signout: async (): Promise<ResponseMessage> => {
     const response = await fetch('/api/auth/signout', {
       method: 'POST',
     });
@@ -146,7 +155,7 @@ export const listingsApi = {
         return { isAuthenticated: false };
       }
       return await response.json();
-    } catch (error) {
+    } catch {
       return { isAuthenticated: false };
     }
   },

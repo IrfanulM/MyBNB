@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { listingsApi, Listing } from '../services/api';
-import BookingModal from '../pages/booking';
+import BookingModal from '../components/BookingModal';
 
 export default function HomePage() {
   const [error, setError] = useState<string>("");
@@ -102,7 +102,6 @@ export default function HomePage() {
       const fetchedSearchResults: Listing[] = await listingsApi.getSearchResults(filterParams);
       setListings(fetchedSearchResults);
       
-      // Build the dynamic search summary
       let summary = `${fetchedSearchResults.length} result(s) found`;
       if (location) summary += ` in "${location}"`;
       if (property_type) summary += ` for "${property_type}"`;

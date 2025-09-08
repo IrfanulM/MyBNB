@@ -15,8 +15,12 @@ export default function SignUp() {
         try {
             await listingsApi.signup({ email, password });
             window.location.href = '/signin';
-        } catch (err: any) {
-            setError(err.message);
+        } catch (err) {
+            if (err instanceof Error) {
+                setError(err.message);
+            } else {
+                setError("An unknown error occurred.");
+            }
         } finally {
             setLoading(false);
         }
