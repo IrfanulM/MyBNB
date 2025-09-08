@@ -8,6 +8,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <Layout>
       <Head>
+        <link rel="icon" href="/favicon.ico?v=2" />
         <title>MyBNB</title>
         <meta name="description" content="A web application for booking property listings." />
       </Head>
